@@ -7,7 +7,46 @@
 //
 
 #include "polynomial.h"
-
+//--------------------------------CONSTRUCTORS----------------------------------
+/*
+ * Default Constructor 
+ * The default constructor creates and initializes the object
+ *
+ * Precondtion:
+ *
+ * Postcondtion:
+ */
+//------------------------------------------------------------------------------
 Polynomial::Polynomial(){
+    head = nullptr;
+    size = 0;
+}
+
+//------------------------------------------------------------------------------
+/*
+ * Copy Constructor
+ * The default constructor creates and initializes the object
+ *
+ * Precondtion:
+ *
+ * Postcondtion:
+ */
+
+Polynomial::Polynomial(const Polynomial& p){
+    
+    
+    
+}
+
+//------------------------------------------------------------------------------
+/*
+ * Destructor 
+ * The default constructor creates and initializes the object
+ *
+ * Precondtion:
+ *
+ * Postcondtion:
+ */
+Polynomial::~Polynomial(){
     
 }
