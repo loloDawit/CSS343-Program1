@@ -10,7 +10,7 @@
 // Assumption and Implementation Details:
 //                    -- The header file was provided by the instructor
 //                    -- Format of the input file is correct
-//                    --
+//                    -- 
 //------------------------------------------------------------------------------
 
 #include <stdio.h>
@@ -23,7 +23,7 @@ class Polynomial {
     friend ostream& operator<<( ostream &output, const Polynomial& p );
     // Constructor: the default is a 0-degree polynomial with 0.0 coefficient
 public:
-    //-------------------------------Member functions---------------------------
+    //-------------------------------CONSTRUCTOR--------------------------------
     /*
      * Default Constructor
      * The default constructor creates and initializes the object
@@ -59,7 +59,7 @@ public:
     
     ~Polynomial( );
     
-    //--------------------------------------------------------------------------
+    //-----------------------------Member functions-----------------------------
     /*
      * Default Constructor
      * The default constructor creates and initializes the object
@@ -97,7 +97,7 @@ public:
     
     //--------------------------------------------------------------------------
     
-    //-------------------------------Arithmetic operators-----------------------
+    //--------------------------Arithmetic operators----------------------------
     /*
      * Default Constructor
      * The default constructor creates and initializes the object
@@ -123,7 +123,7 @@ public:
     
     //--------------------------------------------------------------------------
     
-    //-----------------------------Boolean comparison operators-----------------
+    //-------------------------Boolean comparison operators---------------------
     /*
      * Default Constructor
      * The default constructor creates and initializes the object

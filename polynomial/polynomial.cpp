@@ -7,6 +7,22 @@
 //
 
 #include "polynomial.h"
+/*
+ * Operator << 
+ * Output operator for class polynomial, print data, resposibility for output is
+ * left to object stored in the polynomial
+ */
+
+ostream& operator <<(ostream &output, const Polynomial& thePolynomial){
+    
+    Polynomial::Term *current = thePolynomial.head;
+    while (current != NULL) {
+        output << current->coeff;
+        current = current ->next;
+    }
+    
+    return output;
+}
 //--------------------------------CONSTRUCTORS----------------------------------
 /*
  * Default Constructor 
@@ -32,9 +48,9 @@ Polynomial::Polynomial(){
  * Postcondtion:
  */
 
-Polynomial::Polynomial(const Polynomial& p){
+Polynomial::Polynomial(const Polynomial& polyObj){
     
-    
+ //   return *this =
     
 }
 
