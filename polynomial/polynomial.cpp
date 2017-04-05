@@ -14,10 +14,13 @@
  */
 
 ostream& operator <<(ostream &output, const Polynomial& thePolynomial){
+   
+    // needs to be tested
     
     Polynomial::Term *current = thePolynomial.head;
     while (current != NULL) {
         output << current->coeff;
+        output << "x^" << current->power<<endl;
         current = current ->next;
     }
     
