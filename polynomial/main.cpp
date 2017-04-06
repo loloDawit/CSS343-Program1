@@ -110,11 +110,14 @@ polyll::polyll()
 }
 void polyll::poly_append(float c, int e)
 {
-    if(e < 0)
+    // power > 1
+    if(e < 0 || c == 0)
         return;
+    // e^0 = 1
     if(e == 0)
         c=1;
-    polynode* temp = head;
+    
+    polynode* temp = head;   // pointer points to head
     if (temp == NULL) {
         temp = new polynode;
         head = temp;
@@ -239,7 +242,7 @@ polyll::~polyll()
 int main()
 {
     polyll p1;
-    p1.poly_append(1.4, 5);
+    p1.poly_append(0, 5);
     p1.poly_append(1.5, 4);
     p1.poly_append(1.7, 2);
     p1.poly_append(1.8, 1);

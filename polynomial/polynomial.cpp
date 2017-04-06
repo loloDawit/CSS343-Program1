@@ -291,7 +291,7 @@ Polynomial& Polynomial:: operator-=( const Polynomial& rightPoly ){
 }
 
 /**
- The maximum polynomial deg
+ The maximum polynomial with degree is returned  
 
  @return <#return value description#>
  */
@@ -312,4 +312,14 @@ int Polynomial::degree()const{
     return maxDegree;
 }
 
+/**
+ <#Description#>
+
+ @param power <#power description#>
+
+ @return <#return value description#>
+ */
+double Polynomial::coefficient(const int power)const{
+    return power; 
+}
 
