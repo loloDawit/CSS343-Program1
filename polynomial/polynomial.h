@@ -99,15 +99,22 @@ public:
     
     //--------------------------Arithmetic operators----------------------------
     /*
-     * Default Constructor
-     * The default constructor creates and initializes the object
+     * Operator +
+     * Addes two polynomial objects and returns a new polynomial
      *
      * Precondtion:
      *
-     * Postcondtion:
+     * Postcondtion: new polymonial objects is returned
      */
     
-    Polynomial operator+( const Polynomial& p ) const;
+    /**
+     Operator +
+
+     @param rightPoly Addes two polynomial objects and returns a new polynomial
+
+     @return A union of two polynomials objects is returned.
+     */
+    Polynomial operator+( const Polynomial& rightPoly ) const;
     
     //--------------------------------------------------------------------------
     /*
@@ -159,7 +166,7 @@ public:
      * Postcondtion:
      */
     
-    Polynomial& operator=( const Polynomial& p );
+     Polynomial& operator=( const Polynomial& p );
     
     //--------------------------------------------------------------------------
     /*
@@ -198,7 +205,7 @@ private:
         Term *next;                          // a pointer to the next lower term
     };
     int size;                               // # terms in the sparce polynomial
-    Term *head;               // a pointer to the doubly-linked circular list of
+    Term *head;            // a pointer to the doubly-linked circular list of
     
     // sparce polynomial
     //--------------------------------------------------------------------------
