@@ -291,13 +291,25 @@ Polynomial& Polynomial:: operator-=( const Polynomial& rightPoly ){
 }
 
 /**
- <#Description#>
+ The maximum polynomial deg
 
  @return <#return value description#>
  */
 int Polynomial::degree()const{
     
-    re
+    if(head == NULL)
+        return 0;
+    
+    // traverse the list and return the max power
+    Term *cur = head;
+    int maxDegree = 0;
+    while (cur!=NULL) {
+        if(cur ->power > maxDegree){
+            maxDegree = cur ->power;
+        }
+        cur = cur ->next;
+    }
+    return maxDegree;
 }
 
 

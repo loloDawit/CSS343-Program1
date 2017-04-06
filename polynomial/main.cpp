@@ -98,6 +98,7 @@ private:
     
 public:
     polyll();
+    int degree();
     void poly_append(float c, int e);
     void display_poly();
     void poly_add(polyll& l1, polyll& l2);
@@ -215,6 +216,17 @@ void polyll::poly_add(polyll& l1, polyll& l2)
     }
     z->link = NULL;
 }
+int polyll::degree(){
+    int power = 0;
+    polynode *cur = head;
+    while (cur != NULL) {
+        if(cur ->exp > power){
+            power = cur ->exp;
+        }
+        cur = cur ->link;
+    }
+    return power;
+}
 polyll::~polyll()
 {
     polynode* q;
@@ -232,8 +244,11 @@ int main()
     p1.poly_append(1.7, 2);
     p1.poly_append(1.8, 1);
     p1.poly_append(1.9, 0);
+    
     cout << "\nFirst polynomial:";
+    
     p1.display_poly();
+    cout << "\nFirst polynomial degree:" << p1.degree()<< endl;
     polyll p2;
     p2.poly_append(1.5, 6);
     p2.poly_append(2.5, 5);
