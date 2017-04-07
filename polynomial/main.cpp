@@ -20,8 +20,6 @@ int main( )
     cout<<"--------Start of your Driver--------"<<endl<<endl<<endl;
     Polynomial p1;
     
-    
-    
     p1.changeCoefficient( 1, 1 );
     
     p1.changeCoefficient( 4, 4 );
@@ -129,21 +127,21 @@ int main( )
     //More + and - testing
     Polynomial p5;
     p5.changeCoefficient(4.5,10);
-    p5.changeCoefficient(32,-2);
+ //   p5.changeCoefficient(32,-2);
     p5.changeCoefficient(54.32,6);
     p5.changeCoefficient(98.9,1);
     p5.changeCoefficient(24.41,14);
     
     Polynomial p6;
     p6.changeCoefficient(4.5,10);
-    p6.changeCoefficient(-32,-2);
+   // p6.changeCoefficient(-32,-2);
     p6.changeCoefficient(43.15,22);
     p6.changeCoefficient(38.3,18);
     p6.changeCoefficient(24.41,14);
     
     Polynomial p7;
     p7.changeCoefficient(21.11,20);
-    p7.changeCoefficient(-32,-82);
+  //  p7.changeCoefficient(-32,-82);
     p7.changeCoefficient(64.96,14);
     p7.changeCoefficient(32.24,77);
     p7.changeCoefficient(54.71,100);
@@ -157,8 +155,8 @@ int main( )
  //   cout<<"p5+p7 is:    "<<(p5+p7)<<endl;
   //  cout<<"p7+p6 is:    "<<(p7+p6)<<endl;
     
-    cout<<"p5-p6 is:    "<<(p5-p6)<<endl;
-    cout<<"p5-p7 is:    "<<(p5-p7)<<endl;
+    //cout<<"p6-p5 is:    "<<(p5-p6)<<endl;
+  cout<<"p5-p7 is:    "<<(p5-p7)<<endl;
     cout<<"p7-p6 is:    "<<(p7-p6)<<endl;
     
     cout<<"-------End of my Driver--------"<<endl<<endl<<endl<<endl;
@@ -169,202 +167,4 @@ int main( )
 }
 
 
-//#include <iostream>
-//using namespace std;
-//
-//class polyll {
-//private:
-//    struct polynode {
-//        float coeff;
-//        int exp;
-//        polynode* link;
-//    }
-//    * head;
-//    
-//public:
-//    polyll();
-//    int degree();
-//    double coeffient(const int power)const;
-//    void poly_append(float c, int e);
-//    void display_poly();
-//    void poly_add(polyll& l1, polyll& l2);
-//    ~polyll();
-//};
-//polyll::polyll()
-//{
-//    head = NULL;
-//}
-//void polyll::poly_append(float c, int e)
-//{
-//    // power > 1
-//    if(e < 0 || c == 0)
-//        return;
-//    // e^0 = 1
-//    if(e == 0)
-//        c=1;
-//    
-//    polynode* temp = head;   // pointer points to head
-//    if (temp == NULL) {
-//        temp = new polynode;
-//        head = temp;
-//    }
-//    else {
-//        while (temp->link != NULL)
-//            temp = temp->link;
-//        temp->link = new polynode;
-//        temp = temp->link;
-//    }
-//    temp->coeff = c;
-//    temp->exp = e;
-//    temp->link = NULL;
-//}
-//void polyll::display_poly()
-//{
-//    polynode* temp = head;
-//    int f = 0;
-//    
-//    cout << endl;
-//    while (temp != NULL) {
-//        if (f != 0) {
-//            if (temp->coeff > 0)
-//        cout << " + ";
-//    else
-//        cout << " ";
-//        } if (temp->exp != 0)
-//            cout << temp->coeff << "x^" << temp->exp;
-//        else
-//            cout << temp->coeff;
-//        temp = temp->link;
-//        f = 1;
-//    }
-//    cout << endl; 
-//}
-//void polyll::poly_add(polyll& l1, polyll& l2)
-//{
-//    polynode* z = nullptr;
-//    if (l1.head == NULL && l2.head == NULL)
-//        return;
-//    polynode *temp1, *temp2;
-//    temp1 = l1.head;
-//    temp2 = l2.head;
-//    while (temp1 != NULL && temp2 != NULL) {
-//        if (head == NULL) {
-//            head = new polynode;
-//            z = head;
-//        }
-//        else {
-//            z->link = new polynode;
-//            z = z->link;
-//        }
-//        if (temp1->exp < temp2->exp) {
-//            z->coeff = temp2->coeff;
-//            z->exp = temp2->exp;
-//            temp2 = temp2->link;
-//        }
-//        else {
-//            if (temp1->exp > temp2->exp) {
-//                z->coeff = temp1->coeff;
-//                z->exp = temp1->exp;
-//                temp1 = temp1->link;
-//            }
-//            else {
-//                if (temp1->exp == temp2->exp) {
-//                    z->coeff = temp1->coeff + temp2->coeff;
-//                    z->exp = temp1->exp;
-//                    temp1 = temp1->link;
-//                    temp2 = temp2->link;
-//                }
-//            }
-//        }
-//    }
-//    while (temp1 != NULL) {
-//        if (head == NULL) {
-//            head = new polynode;
-//            z = head;
-//        }
-//        else {
-//            z->link = new polynode;
-//            z = z->link;
-//        }
-//        z->coeff = temp1->coeff;
-//        z->exp = temp1->exp;
-//        temp1 = temp1->link;
-//    }
-//    while (temp2 != NULL) {
-//        if (head == NULL) {
-//            head = new polynode;
-//            z = head;
-//        }
-//        else {
-//            z->link = new polynode;
-//            z = z->link;
-//        }
-//        z->coeff = temp2->coeff;
-//        z->exp = temp2->exp;
-//        temp2 = temp2->link;
-//    }
-//    z->link = NULL;
-//}
-//int polyll::degree(){
-//    int power = 0;
-//    polynode *cur = head;
-//    while (cur != NULL) {
-//        if(cur ->exp > power){
-//            power = cur ->exp;
-//        }
-//        cur = cur ->link;
-//    }
-//    return power;
-//}
-//polyll::~polyll()
-//{
-//    polynode* q;
-//    while (head != NULL) {
-//        q = head->link;
-//        delete head;
-//        head = q;
-//    }
-//}
-//double polyll::coeffient(const int power)const{
-//    
-//    if(head == nullptr){
-//        return 0;
-//    }
-//        polynode *current = head;
-//        while (current !=nullptr) {
-//            if(current ->exp == power){
-//                return current ->coeff;             }
-//            current = current ->link;
-//        }
-//    
-//    return 0;
-//}
-//int main()
-//{
-//    polyll p1;
-//    p1.poly_append(0, 5);
-//    p1.poly_append(1.5, 4);
-//    p1.poly_append(1.7, 2);
-//    p1.poly_append(1.8, 1);
-//    p1.poly_append(1.9, 0);
-//    
-//    cout << "\nFirst polynomial:";
-//    
-//    p1.display_poly();
-//    cout << "\nFirst polynomial degree:" << p1.degree()<< endl;
-//        cout << "\nFirst polynomial coeffient:" << p1.coeffient(4)<< endl;
-//      cout << "\nFirst polynomial coeffient:" << p1.coeffient(0)<< endl;
-//    polyll p2;
-//    p2.poly_append(1.5, 6);
-//    p2.poly_append(2.5, 5);
-//    p2.poly_append(-3.5, 4);
-//    p2.poly_append(4.5, 3);
-//    p2.poly_append(6.5, 0);
-//    cout << "\nSecond polynomial:";
-//    p2.display_poly();
-//    polyll p3;
-//    p3.poly_add(p1, p2);
-//    cout << "\nResultant polynomial: ";
-//    p3.display_poly();
-//  //  getch();
-//}
+
