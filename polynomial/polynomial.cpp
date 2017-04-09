@@ -7,167 +7,235 @@
 //
 
 #include "polynomial.h"
-
+//------------------------------- OPERATOR << ----------------------------------
 /**
  Operator <<
  Output operator for class polynomial, print data, resposibility for output is
  left to object stored in the polynomial
 
  @param output        used to overload the cout object
- @param p passed by reference to print its data content
+ @param printPoly passed by reference to print its data content
 
  @return an overload print statement
  */
-ostream& operator <<(ostream &output, const Polynomial& p){
+//------------------------------------------------------------------------------
+ostream& operator <<(ostream &output, const Polynomial& printPoly){
    
-    bool minus=false;//will determine if a minus sign is printed
-    bool constant=false;//to handle constant term printing (to print at the end)
-    double constCoeff=0.0;//will save the value of the constant term
-    int constPower=0;//the power of the constant term
-    if (p.head==NULL||p.size==0){//if there are no terms or if there are problems with the param
-        output<<"0"<<endl;//print 0 and stop
+    // check empty list first
+    // if the list is empty print 0 and stop.
+    if (printPoly.head==NULL||printPoly.size==0){
+     
+        output << "0" <<endl;
         return output;
     }
-    Polynomial:: Term *traverse;
-    traverse=p.head->next;//otherwise create a temp term
-    if(traverse->power==0){//if the first term is a constant term (this means negative power terms follow it)
-        constant=true;//remember it
-        constCoeff=traverse->coeff;//save the value so we can print at the end
+    
+    // Handel constant terms and keep tracking to print it at the end of the
+    // polynomial list Coeff_const saves the value for the constant term
+    bool check_const = false;
+    double Coeff_const = 0.0;
+    
+    // If the term is not constant, creat a new Term object
+    Polynomial:: Term *current = printPoly.head->next;
+    
+    // constant terms can be identifed by thier power, so check the power first
+    if(current->power == 0){
+        
+        // the term is constant, remeber it and save the value so it can be
+        // printed at the end
+        check_const = true;
+        Coeff_const = current ->coeff;
+        
     }
-    else if(traverse->power==1){//if the first term has a 1 power then print coeffx
-        if(traverse->coeff==1){//if the coefficient is 1
-            output<<"x";//just print x
+    // if the term has power = 1, print x as coefficient and x becomes the term
+    else if(current ->power== 1){
+        
+        if(current ->coeff == 1){
+            output<<"x";
+            
         }
         else{
-            output<<traverse->coeff<<"x";//otheriwse print coeffx
+            //otheriwse print x  as coefficient for each term
+            output<<current ->coeff<<"x";
+            
         }
     }
-    else if(traverse->power==-1){//if the first term has a -1 power
-        output<<traverse->coeff<<"/x";//print coeff/x
+    
+    // print one if the polynomial term has a power = 0
+    else if(current ->power == 0){
+        
+        return output<< " 1 ";
+        
     }
-    else if(traverse->power<1){//if the first term has a negative power
-        output<<traverse->coeff<<"/x^"<<(traverse->power)*(-1);//print coeff/x^power
+    // print 0 i the polynomial term has a power < 0. By definition a polynimial
+    // can not have a negative power.
+    else if(current ->power < 1){
+        
+       return  output<<"Not defined!!!";
+        
     }
-    else{//for powers>1
-        if(traverse->coeff==1){//if the coeff is 1
-            output<<"x^"<<traverse->power;//just print x
+    else if (current ->coeff == 0){
+        
+        return output << "";
+    }
+    
+    // At this point, the polynomial term is not constant or it has a power > 1
+    else{
+        
+        // if we incounter a term with coefficient = 1, print
+        // x
+        if(current ->coeff == 1){
+            
+            output<<"x^"<<current ->power;
    	    }
-        else{//coeff is not 1
-            output<<traverse->coeff<<"x^"<<traverse->power;//print coeffx^power
+        
+        // otherwise print x^ before the coefficient
+        else{
+            
+            output<<current ->coeff<<"x^"<<current ->power;
+            
         }
     }
-    if(traverse->next==p.head){//if theres only one term then stop
-        output<<endl;
-        traverse=NULL;//for memory leaks
-        delete traverse;//for memory leaks
+    
+    // No need to traverse the list if we only have one polynomial term
+    if(current ->next == printPoly.head){
+        
+        output << endl;
+        current = NULL;
+        delete current;
         return output;
+        
     }
-    if(traverse->next->coeff<0 && traverse->next->power!=0){//if the first term wasn't constant and the next term's coeff is negative
-        output<<" - ";//print a -
-        minus=true;
-    }
-    else if(traverse->next->coeff>0 && traverse->next->power!=0){//if the first term wasn't a constant and the next terms' coeff is positive
-        output<<" + ";//othwerise print a +
-    }
-    traverse=traverse->next;//move on to the next term
     
+    // To handel a polynomial that has negative coeffiecint, just print space
+    if(current ->next ->coeff < 0 && current ->next ->power != 0){
+        
+        output<<" ";
+      
+    }
     
-    while(traverse!=p.head){//while we haven't reached the end of the polynomial
-        if(traverse->power==0){//if the term is constant
-            constant=true;//remember it
-            constCoeff=traverse->coeff;//save the value so we can print it at the end
+    // But if we have a positive term, print " + "
+     if(current ->next ->coeff >0 && current ->next ->power != 0){
+         
+        output<<" + ";
+         
+    }
+    // advance
+    current = current ->next;
+    
+    // Now start traversing the list
+    while(current != printPoly.head){
+        
+        // do the same thing again, if we have a term with power = 0, save the
+        // value and print it at last
+        if(current ->power==0){
+            
+            check_const = true;
+            Coeff_const = current ->coeff;
+            return output << " + 1 " ; 
+            
         }
-        else if(traverse->power==1){//if the power is 1
-            if(traverse->coeff==1){//if the coeff is 1
-                output<<"x";//just print x
+        //test
+        else if (current ->coeff == 0){
+            
+             break;
+        }
+        // again do the same thing, if the power = 1, print x as instead of term
+        else if(current ->power==1){
+            
+            if(current ->coeff==1){
+                
+                output<<"x";
+            }
+            
+            else{
+                // otherwise print coefficient x
+                output<<current ->coeff<<"x";
+                
+            }
+            
+        }
+        // A polynomial with power less than zero is not a polynomial
+        else if(current ->power < 0){
+            
+            // The polynomials a Laurent polynomial.
+           return output << " '0' ";
+            
+        }
+        else{
+        
+            // otherwise print print x and x^ depending on the terms power
+            if(current ->coeff==1){
+                
+                output<<"x^"<<current ->power;
+                
             }
             else{
-                output<<traverse->coeff<<"x";//print coeffx
-            }
-        }
-        else if(traverse->power==-1){//if the power is -1
-            if(minus==false){//if we didn't print a minus the term before this
-                output<<traverse->coeff<<"/x";//print coeff/x
-            }
-            else{//if we did print a minus sign the term before this
-                output<<(traverse->coeff)*(-1)<<"/x";//print coeff/x but flip the sign of coeff
+                
+                    output<<current ->coeff<<"x^"<<current ->power;
+              
             }
         }
         
-        else if(traverse->power<1){//if the power<1
-            if(minus==false){//if we didn't print a minus the term before this
-                output<<traverse->coeff<<"/x^"<<(traverse->power)*(-1);//print coeff/x^power
+        // now we are the end
+        if(current ->next == printPoly.head){
+            if(check_const == true){
+                
+                    output<<" + "<< Coeff_const;
+               
             }
-            else{//if we did print a minus sign the term before this
-                output<<(traverse->coeff)*(-1)<<"/x^"<<(traverse->power)*(-1);//print coeff/x^power but flip the sign of coeff
-            }
-        }
-        else{//if the power>1
-            if(traverse->coeff==1){//if coeff is 1
-                output<<"x^"<<traverse->power;//just print x^power
-            }
-            else{//coeff is not 1
-                if(minus==false){//if we didn't print a minus sign the term before this
-                    output<<traverse->coeff<<"x^"<<traverse->power;//print coeffx^power
-                }
-                else{//if we did print a minus sign the term before this
-                    output<<(traverse->coeff)*(-1)<<"x^"<<traverse->power;//print coeffx^power but flip the sign of coeff
-                }
-            }
-        }
-        
-        if(traverse->next==p.head){//if that term was the last one
-            if(constant==true){//if we ran into a constant term along the way
-                if(constCoeff<0){//if the coeff was negative
-                    output<<" - "<<(constCoeff)*(-1);//print a minus sign and coeff(sign is flipped)
-                }
-                else{//if the coeff was positive
-                    output<<" + "<<constCoeff;//print the value
-                }
-            }
-            //now we return after taking care of memory leaks
-            output<<endl;
-            traverse=NULL;//for memory leaks
-            delete traverse;//for memory leaks
+          
+            output << endl;
+            current = NULL;
+            delete current;
             return output;
             
         }
-        //at this point the previous term was not the last
-        if(traverse->next->coeff>0 && traverse->next->power!=0){//if the next term isn't constant and the coeff is positive 
-            output<<" + ";//print a +
-            minus=false;//remember that we printed a plus sign
+        // at this point prev is not at end keep going
+        // if the next term is not constant and the coefficent is positive
+        if(current ->next ->coeff > 0 && current ->next ->power != 0){
+            
+            output<<" + ";
+           
         }
-        else if(traverse->next->coeff<0 && traverse->next->power!=0){//if the next term isn't constant and the coeff is negative
-            output<<" - ";//print a -
-            minus=true;//remember that we printed a minus sign
-        }
-        traverse=traverse->next;//go on to the next term
+        // advace to the next term
+        current = current ->next;
+    
     }
-    traverse=NULL;//for memory leaks
-    delete traverse;//for memory leaks
+    
+    current = NULL;
+    delete current;
     return output;
     
 }
-//--------------------------------CONSTRUCTORS----------------------------------
+
+//------------------------------- CONSTRUCTORS ---------------------------------
 /*
  * Default Constructor 
- * The default constructor creates and initializes the object
+ * The default constructor creates and initializes the object with a doubly-
+ * linked circular list with a dummy header.
  *
  * Precondtion: N/A
  *
  * Postcondtion: A polynomial object with circular linked list is created
  */
 //------------------------------------------------------------------------------
-Polynomial::Polynomial(){
+
+Polynomial::Polynomial():head(NULL){
    
-    size = 0;
-    head = new Term;      // dummy head
+   // creat a dummy header
+    head = new Term;
     
-    // set the circular linked list
-    head ->next = head, head ->prev = head;
+    // create the circular linked list
+    head->next=head;
+    head->prev=head;
     
-    head ->coeff = 0, head ->power = 0;
+    // initialize the coefficient and power of the term object
+    head->power=0;//initialize
+    head->coeff=0.0;//initialize
     
+    // finally set the size to zero
+    size=0;//initialize
+
 }
 
 //------------------------------------------------------------------------------
@@ -182,6 +250,7 @@ Polynomial::Polynomial(){
  * Postcondtion: The left and right part of the object must be identical. Each 
                  object in copied.
  */
+//------------------------------------------------------------------------------
 
 Polynomial::Polynomial(const Polynomial& rightPoly){
     
@@ -189,7 +258,8 @@ Polynomial::Polynomial(const Polynomial& rightPoly){
     head = new Term;
     
     // create a circular linked list < -- >
-    head ->next = head, head ->prev = head;
+    head ->next = head;
+    head ->prev = head;
     
     // set and initialize the Term values
     head ->coeff = 0;
@@ -198,9 +268,8 @@ Polynomial::Polynomial(const Polynomial& rightPoly){
     // set size to 0
     size = 0;
     
-    // now call the assigment operator to do finialize the deep copying
+    // now call the assigment operator to finialize the deep copying
     *this = rightPoly;
-    
  
 }
 
@@ -214,6 +283,8 @@ Polynomial::Polynomial(const Polynomial& rightPoly){
  *
  * Postcondtion: Memory is deallocated
  */
+//------------------------------------------------------------------------------
+
 Polynomial::~Polynomial(){
   
     // check for empty list first
@@ -224,6 +295,8 @@ Polynomial::~Polynomial(){
     if(size == 1){
         
         remove(head ->next);
+        delete head;
+        head = NULL;
         return;
         
     }
@@ -249,47 +322,56 @@ Polynomial::~Polynomial(){
     
 }
 
-//------------------------------------------------------------------------------
-/*
- * operator =
- * Make a deep copy of the right object into the left parameter object
- *
- * Precondtion:
- *
- * Postcondtion:
- */
+//----------------------------OVERLOADED OPERATORS------------------------------
  /**
-  <#Description#>
+  Overloaded assignment operator  =
+  Make a deep copy of the left object into the right parameter object
+  
+  Pre-condtion: The param is already initilized
 
-  @param rightpoly <#rightpoly description#>
+  @param rightpoly object where term this is copied to
 
-  @return <#return value description#>
+  @return the param this must have the same objects as the left
   */
- Polynomial& Polynomial::operator=(const Polynomial &rightpoly){
+//------------------------------------------------------------------------------
+
+ Polynomial& Polynomial::operator = (const Polynomial &rightpoly){
      
-     
-     if(rightpoly.size==0){//we are done if there are no terms to add
+     // check size first
+     if(rightpoly.size == 0){
+         
          return *this;
      }
-     Term *traverse=rightpoly.head->next;//otherwise create a traversal node
-     while(traverse!=rightpoly.head){//while the end hasnt been reached
-         changeCoefficient(traverse->coeff,traverse->power);//add p's term
-         traverse=traverse->next;//move on to the next term
+     
+     // travertse the list and copy everything
+     Term *traverse = rightpoly.head ->next;
+     
+     while(traverse != rightpoly.head){
+         
+         // call function changeCoefficient to add the rightpoly
+         changeCoefficient(traverse ->coeff,traverse ->power);
+         traverse = traverse ->next;
+         
      }
-     traverse=NULL;//for memory leaks
-     delete traverse;//for memory leaks
+     
+     traverse = NULL;
+     delete traverse;
      return *this;
 }
+
 //------------------------------------------------------------------------------
-/*
- * operator ==
- * returns true if the list are identical
- *
- * Precondtion:
- *
- * Postcondtion:
+/**
+ checks if two polynomial terms are identical or not 
+ 
+ Pre-condtion: head != nullptr
+
+ @param rightpoly the object to be copied
+
+ @return a boolean value if returned based on the condition
  */
-bool Polynomial::operator==(const Polynomial &rightpoly)const{
+//------------------------------------------------------------------------------
+
+bool Polynomial::operator == (const Polynomial &rightpoly)const{
     
     Term *current = head ->next;
     Term *currentRight = rightpoly.head ->next;
@@ -299,6 +381,7 @@ bool Polynomial::operator==(const Polynomial &rightpoly)const{
         if(current ->coeff != currentRight ->coeff || current ->power !=
            currentRight ->power)
             return false;
+        
         current = current ->next;
         currentRight = currentRight ->next;
         
@@ -307,108 +390,174 @@ bool Polynomial::operator==(const Polynomial &rightpoly)const{
     // check each condition explicitly
     if((current == head && currentRight != head) ||
        (current !=head && currentRight == head))
+        
         return false;
+    
     else
     
         return true;
     
 }
+
 //------------------------------------------------------------------------------
-/*
- * operator !=
- * returns true if the list are not equal
- *
- * Precondtion:
- *
- * Postcondtion:
+
+/**
+ checks if two polynomial terms are identical or not
+
+ @param rightpoly head != nullptr
+
+ @return a boolean value if returned based on the condition
  */
+//------------------------------------------------------------------------------
+
 bool Polynomial::operator!=(const Polynomial &rightpoly)const{
     
     return !(*this == rightpoly);
     
 }
+
 //------------------------------------------------------------------------------
 /**
- <#Description#>
+ Overloaded arthimetic operator +
+ Takes two non-zero polynomial objects and add like terms
+ 
+ Pre-conditions: head != nullptr
 
- @param p <#rightPoly description#>
+ @param rightpoly the polynomial object to be added
 
- @return <#return value description#>
+ @return the left side object is returned if the param is 0. otherwise the sum 
+         of the polynomial objects is retuened
  */
-Polynomial Polynomial:: operator+( const Polynomial& p ) const{
+//------------------------------------------------------------------------------
+
+Polynomial Polynomial:: operator + ( const Polynomial& rightpoly ) const{
     
-  
-    Polynomial sum(*this);//let this be the current sum
-    Polynomial p2(p);//create a copy of the param
+    // create a polynomial object and it has 'this object' as it param
+    Polynomial sum(*this);
     
-    Term *traverseSum;//create a traversal term for sum
-    Term *traversep2=p2.head->next;//create a traverseal term for p2
-    bool exists=false;//for terms with powers present both in sum and p2 (to combine like terms)
+    // crate another polynomial object and as copy of the param 'rightpoly'
+    Polynomial polyadd(rightpoly);//create a copy of the param
     
-    while(traversep2!=p2.head){//for every term in p2
-        exists=false;//assume the term doesn't exist in both poly's
-        traverseSum=sum.head->next;//start at the first term of sum
-        while(traverseSum!=sum.head){//for every term in sum
-            if(traversep2->power == traverseSum->power){//if the current term has common powers in both sum and p2
-                sum.changeCoefficient(traverseSum->coeff+traversep2->coeff,traverseSum->power);//combine like terms
-                exists=true;//remember that we combined
+    // to traverse the list
+    Term *currentLeft;
+    Term *currentRight = polyadd.head->next;
+    
+    // to keep track and add each like terms in the polynomial list
+    bool like_terms = false;
+    
+    while(currentRight != polyadd.head){
+        
+        // assume no like term exists at the start
+        like_terms = false;
+        currentLeft = sum.head->next;
+        
+        while(currentLeft != sum.head){
+            
+            //if the current term has common powers in both sum and polyadd
+            if(currentRight ->power == currentLeft ->power){
+                
+                //combine like terms
+                sum.changeCoefficient(currentLeft ->coeff + currentRight->coeff,
+                                      currentLeft ->power);
+                like_terms = true;
+                
             }
-            traverseSum=traverseSum->next;//move on to the next term
+            
+            // advance
+            currentLeft = currentLeft ->next;
+            
         }
-        //the inner loop finished
-        if(!exists){//if we didn't combine like terms
-            sum.changeCoefficient(traversep2->coeff,traversep2->power);//add p2's term
+        
+        // move to the next loop, we already have all the like terms in the
+        // polynomial list
+        if(!like_terms){
+            
+            // add
+            sum.changeCoefficient(currentRight ->coeff,currentRight ->power);
+            
         }
-        traversep2=traversep2->next;//move on to the next term of p2 
+        
+        currentRight = currentRight ->next;//move on to the next term of p2
+        
     }
     
     return sum;
-    
-    
-    
+
 }
-//------------------------------------------------------------------------------
+
+//-----------------------------ARITHMETIC OPERATORS-----------------------------
 /**
- <#Description#>
+ Overloaded arthimetic operator -
+ Takes two non-zero polynomial objects and substract like terms
+ 
+ Pre-conditions: head != nullptr
 
- @param p <#rightPoly description#>
+ @param rightpoly the polynomial object to be substructed
 
- @return <#return value description#>
+ @return the left side object is returned if the param is 0. otherwise the 
+         different of the polynomial objects is retuened
  */
-Polynomial Polynomial:: operator-( const Polynomial& p ) const{
+//------------------------------------------------------------------------------
+
+Polynomial Polynomial:: operator - ( const Polynomial& rightpoly ) const{
     
-    Polynomial negativeSum(p);//create a copy of p
-    Term *traverse=negativeSum.head->next;//start at the first term
-    while(traverse!=negativeSum.head){//for every term
-        negativeSum.changeCoefficient(traverse->coeff*(-1),traverse->power);//flip the sign of coeff
-        traverse=traverse->next;//move on to the next term
+    //create a copy of the param object
+    Polynomial negativeSum(rightpoly);
+    
+    Term *currentRight = negativeSum.head->next;
+    
+    while(currentRight!=negativeSum.head){
+        
+        negativeSum.changeCoefficient(currentRight->coeff*(-1),
+                                                           currentRight->power);
+        
+        currentRight=currentRight->next;
+        
     }
-    return (*this+negativeSum);//now call +
+    // call the the + to finilize the result 
+    return (*this+negativeSum);
 }
+
 //------------------------------------------------------------------------------
 /**
- <#Description#>
+ overloaded operator +=
+ Takes two polynomials object and adds the like terms and save the result to this
+ object
 
- @param rightPoly <#rightPoly description#>
+ Pre-conditions: head != nullptr
+ 
+ @param rightPoly the polynomial object to be added
 
- @return <#return value description#>
+ @return the left side object is returned if the param is 0. otherwise the
+        different of the polynomial objects is retuened
  */
+//------------------------------------------------------------------------------
+
 Polynomial& Polynomial:: operator+=( const Polynomial& rightPoly ){
     
     return (*this=(*this + rightPoly));
 }
+
 //------------------------------------------------------------------------------
 /**
- <#Description#>
+ overloaded operator -=
+ Takes two polynomials object and substracts the like terms and save the result 
+ to this object
+ 
+ Pre-conditions: head != nullptr
 
- @param rightPoly <#rightPoly description#>
+ @param rightPoly the polynomial object to be substructed
 
- @return <#return value description#>
+ @return the left side object is returned if the param is 0. otherwise the
+         different of the polynomial objects is retuened
  */
+//------------------------------------------------------------------------------
+
 Polynomial& Polynomial:: operator-=( const Polynomial& rightPoly ){
     
   return (*this=(*this - rightPoly));
 }
+
 //------------------------------------------------------------------------------
 /**
  The maximum polynomial with the leading term's degree is returned  
@@ -417,6 +566,8 @@ Polynomial& Polynomial:: operator-=( const Polynomial& rightPoly ){
 
  @return a value is returned based on the request
  */
+//------------------------------------------------------------------------------
+
 int Polynomial::degree()const{
     
     // check for empty list
@@ -442,6 +593,7 @@ int Polynomial::degree()const{
     // return the leadig terms degree
     return maxDegree;
 }
+
 //------------------------------------------------------------------------------
 /**
  Function returns the cofficient of a polynomial based on param power.
@@ -452,6 +604,8 @@ int Polynomial::degree()const{
 
  @return a value is returned based the param power.
  */
+//------------------------------------------------------------------------------
+
 double Polynomial::coefficient(const int power)const{
     
     // check for empty list
@@ -477,6 +631,7 @@ double Polynomial::coefficient(const int power)const{
     
     return 0;
 }
+
 //------------------------------------------------------------------------------
 /**
  changes the polynomials coeffcient bases on the param or inserts new polynomial
@@ -489,93 +644,160 @@ double Polynomial::coefficient(const int power)const{
  @return a new polynomial is either inserted to an existing polyomial or the 
          existing polynomials coefficient is changed.
  */
+//------------------------------------------------------------------------------
+
 bool Polynomial::changeCoefficient(const double newCoefficient, const int power){
     
-    if(newCoefficient==0){//if the coeff is changed to 0
-        Term *pos=new Term;//create a temp term
-        pos->coeff=0.0;//set the coeff value
-        pos->power=power;//set the power value
-        bool removeTerm=remove(pos);//attempt to remove the term that contains these values
-        delete pos;//for memory leaks
-        pos=NULL;//for memory leaks
-        return removeTerm;
+    // check all cases
+    // CASE I: The new coefficient to be added is 0.
+    //
+    if(newCoefficient == 0 && power == 0){
+        
+        //create a temp term
+        Term *temp = new Term;
+        
+        // set both the coefficient and power
+        temp ->coeff = 0;
+        temp ->power = 0;
+        
+        bool removeTemp = remove(temp);
+        
+        delete temp;
+        temp=NULL;
+        return removeTemp;
+        
     }
-    Term *traversal=head->next;//create a traversal term
-    while(traversal!=head){//while the end hasn't been reached
-        if(traversal->power==power){//if the current term has the same power as the param
-            traversal->coeff=newCoefficient;//just change the coeff and return
-            traversal=NULL;//for memory leaks
-            delete traversal;//for memory leaks
-            return true;
-            
-        }
-        traversal=traversal->next;//otherwise advance to the next term
-    }
-    //at this point the term doesnt currently exist
-    traversal=NULL;//for memory leaks
-    delete traversal;//for memory leaks
     
-    if(size==0){//adding the first term is a special case
-        head->next=new Term;//create a new term that is linked to head
-        head->next->coeff=newCoefficient;//set the coefficient
-        head->next->power=power;//set the power
-        head->prev=head->next;//link the prev of head with the new term
+    // traverse the polynomial list
+    Term *current = head->next;
+    
+    while(current != head){
         
-        head->next->prev=head;//link the new term with head
-        head->next->next=head;//link the new term with head going the other way
+        //if the current term has the same power as the param object
+       
+        if(current ->power == power){
+            
+            //just change the coefficient and return true
+            current ->coeff = newCoefficient;
+            current = NULL;
+            delete current;
+            return true;
+            
+        }
+        
+        current = current->next;
+        
+    }
+    
+    // we reach this point either because current points to head which means
+    // the term does not exist
+    current = NULL;
+    delete current;
+    
+    // CASE II:
+    // The list is empty and we are adding new term to the list
+    if(size == 0){
+        
+        //create a new term that is linked to head
+        head ->next = new Term;
+        
+        //set the coefficient and power
+        head ->next ->coeff = newCoefficient;
+        head ->next ->power = power;
+        
+        //link the prev of head with the new term
+        head->prev = head->next;
+        
+        // add and link the new term with head
+        head ->next ->prev = head;
+        head ->next ->next = head;
         
         
-        size++;//increment the size
+        // remeber to increment the size
+        size++;
         return true;
+        
     }
-    else if(size==1){//for a poly of 1 term
-        if(head->next->power>power ){//if prev has a higher power
-            Term *newTerm=new Term;//create a new term
-            newTerm->coeff=newCoefficient;//set the value
-            newTerm->power=power;//set the value
+    
+    // CASE III
+    // The list has at least one polynomial term
+    else if(size==1){
+        
+        //if prev has a higher power
+        if(head ->next ->power > power ){
             
-            newTerm->next=head;//place the new term to the right of prev
-            newTerm->prev=head->next;//place the new term to the right of prev
+            //create a new term
+            Term *newTerm=new Term;
             
-            newTerm->next->prev=newTerm;//link back
-            newTerm->prev->next=newTerm;//link back
+            //set the coefficient and power
+            newTerm->coeff=newCoefficient;
+            newTerm->power=power;
             
-            size++;//increment the size
-            newTerm=NULL;//for memory leaks
-            delete newTerm;//for memory leaks
+            //place the new term to the right of prev
+            newTerm ->next = head;
+            newTerm ->prev = head ->next;
+            
+            // link back to back (circular)
+            newTerm ->next ->prev = newTerm;
+            newTerm ->prev ->next = newTerm;
+            
+            //increment the size
+            size++;
+            
+            newTerm = NULL;
+            delete newTerm;
             return true;
         }
         
-        else{//if prev has a lower power
-            Term *newTerm=new Term;//create a new term
-            newTerm->coeff=newCoefficient;//set the value
-            newTerm->power=power;//set the value
+        // we are at this point because the 'this' object power is less than
+        // the param power
+        else{
             
-            newTerm->next=head->next;//place the new term to the left of prev
-            newTerm->prev=head;//place the new term to the left of prev
+            //create a new term
+            Term *newTerm=new Term;
             
-            newTerm->next->prev=newTerm;//link back
-            newTerm->prev->next=newTerm;//link back
+            //set the coefficient and power
+            newTerm ->coeff = newCoefficient;
+            newTerm ->power = power;
             
-            size++;//increment the size 
-            newTerm=NULL;//for memory leaks 
-            delete newTerm;//for memory leaks 
+            //place the new term to the left of prev
+            newTerm ->next = head ->next;
+            newTerm ->prev = head;
+            
+               // link back to back (circular)
+            newTerm ->next ->prev = newTerm;
+            newTerm ->prev ->next= newTerm;
+            
+            //increment the size
+            size++;
+            
+            newTerm=NULL;
+            delete newTerm;
             return true;
         }
         
     }
-    return insert(head->next,newCoefficient,power);//if we didnt remove or change a coeff then insert the term
+    // if we reahc this point it means we did not changed the coefficient based
+    // on the param or we did not remove the polynomial term therefore call
+    // insert function to add the param
+    
+    return insert(head ->next,newCoefficient,power);
     
 
 }
+
 //------------------------------------------------------------------------------
 /**
  removes the polynomial term from the list based the function call
+ 
+ Pre-condtion: head != nullptr
 
- @param pos <#pos description#>
+ @param pos head pointer to the term object
 
- @return <#return value description#>
+ @return removes the param object passed as argu
  */
+//------------------------------------------------------------------------------
+
 bool Polynomial::remove(Polynomial::Term *pos){
     
     // traverse the list and find the node that need to be deleted
@@ -645,11 +867,14 @@ bool Polynomial::remove(Polynomial::Term *pos){
     size--;
     return true;
 }
-//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 /**
  Inserts new polynomial to the list based on the param specification and returns
- boolean value.
+ boolean value. The function checks multiple stages before inserting an item to 
+ the polynomial list. If param to be inserted is has a term power is greater than
+ what already exist in the param as a leading term. The function checks to insure
+ the final insert to be in the standard form a_0x^n+a_1x^(n-1)+...+a_(n-1)x+a_n=0
 
  @param prev           pointer to the next object
  @param newCoefficient new value to be inserted as a coefficient
@@ -657,108 +882,159 @@ bool Polynomial::remove(Polynomial::Term *pos){
 
  @return new item is insereted to the polynomial list
  */
+//------------------------------------------------------------------------------
+
 bool Polynomial::insert(Polynomial::Term *prev, const double newCoefficient,
-                        const int power){
-   	bool wentBack=false;//will track if we moved left
-    bool wentForward=false;//will track if we moved right
-    Term *lastPrev=prev;//will remember the last term
-    while(prev!=head){//while prev is not head
-        if(prev->power>power){//if prev's power is bigger
-            if(wentBack==true){//and we have already moved left
-                //place a new term after prev
-                Term *newTerm=new Term;//create a new term
-                newTerm->coeff=newCoefficient;//set the value
-                newTerm->power=power;//set the value
+                                                               const int power){
+    
+    // create two booleans to help track our movment < ----- > (left to right)
+   	bool _prev = false;
+    bool _next = false;
+    
+    // to know the last position in the list
+    Term *last_position = prev;
+    
+    while(prev != head){
+        
+        //check the prev's power with the param power
+        if(prev ->power > power){
+            
+            //and we have already moved left
+            if(_prev == true){
                 
-                newTerm->next=prev->next;//place the new term to the right of prev
-                newTerm->prev=prev;//place the new term to the right of prev
+                //add the a new term after prev
                 
-                newTerm->next->prev=newTerm;//link back
-                newTerm->prev->next=newTerm;//link back
+                Term *newTerm = new Term;
                 
-                size++;//increment the size
-                newTerm=NULL;//for memory leaks
-                delete newTerm;//for memory leaks
-                lastPrev=NULL;//for memory leaks
-                delete lastPrev;//for memory leaks
+                //set the coefficient and power
+                newTerm ->coeff = newCoefficient;
+                newTerm ->power = power;
+                
+                //place the new term to the right of prev
+                newTerm ->next = prev->next;
+                newTerm ->prev = prev;
+                
+                // link back to back (circular)
+                newTerm ->next ->prev = newTerm;
+                newTerm ->prev ->next = newTerm;
+                
+                //increment the size
+                size++;
+                
+                newTerm = NULL;
+                delete newTerm;
+                last_position = NULL;
+                delete last_position;
                 return true;
             }
-            lastPrev=prev;//save the last prev in case we reach the end after moving
-            prev=prev->next;//move right
-            wentForward=true;//remember that we moved right
+            
+            //save the last prev in case we reach the end after moving
+            last_position = prev;
+            //move right
+            prev = prev->next;
+            //remember that we moved right
+            _next = true;
         }
-        else{//if prev's power is smaller
-            if(wentForward==true){//if we already moved forward
+        //at this point the prev's power is smaller
+        else{
+            
+            //if we already moved forward
+            if(_next == true){
+                
                 //place a new term before prev
-                Term *newTerm=new Term;//create a new term
-                newTerm->coeff=newCoefficient;//set the value
-                newTerm->power=power;//set the value
+                //create a new term
+                Term *newTerm = new Term;
                 
-                newTerm->next=prev;//place the new term to the left of prev
-                newTerm->prev=prev->prev;//place the new term to the left of prev
+                //set the coefficient and power
+                newTerm ->coeff = newCoefficient;
+                newTerm ->power = power;
                 
-                newTerm->next->prev=newTerm;//link back
-                newTerm->prev->next=newTerm;//link back
+                //place the new term to the left of prev
+                newTerm ->next = prev;
+                newTerm ->prev = prev->prev;
                 
-                size++;//increment the size
-                newTerm=NULL;//for memory leaks
-                delete newTerm;//for memory leaks
-                lastPrev=NULL;//for memory leaks
-                delete lastPrev;//for memory leaks
+                // link back to back (circular)
+                newTerm ->next ->prev = newTerm;
+                newTerm ->prev ->next = newTerm;
+                
+                //increment the size
+                size++;
+                newTerm = NULL;
+                delete newTerm;
+                last_position = NULL;
+                delete last_position;
                 return true;
             }
-            lastPrev=prev;//save the last prev in case we reach the end after moving
-            prev=prev->prev;//move left
-            wentBack=true ;//remember that we moved left
+            
+            last_position = prev;
+            //move left
+            prev = prev ->prev;
+            //remember that we moved left
+            _prev = true ;
             
         }
         
     }
     //if we reach this point, that means we are either at the first or last term
-    if(lastPrev->next==head ){//if we're at the last term
+    if(last_position ->next == head ){
+        
         //add a new last term
-        Term *newTerm = new Term;//create a new term
-        newTerm->coeff=newCoefficient;//set the value
-        newTerm->power=power;//set the value
+        //create a new term
+        Term *newTerm = new Term;
         
-        newTerm->next=head;//place the new term to the left of head
-        newTerm->prev=head->prev;//place the new term to the left of head
+        //set the coefficient and power
+        newTerm ->coeff = newCoefficient;
+        newTerm ->power = power;
         
-        newTerm->next->prev=newTerm;//link back
-        newTerm->prev->next=newTerm;//link back
+        //place the new term to the left of head
+        newTerm ->next = head;
+        newTerm ->prev = head ->prev;
         
-        size++;//increment the size
-        newTerm=NULL;//for memory leaks
-        delete newTerm;//for memory leaks
-        lastPrev=NULL;//for memory leaks
-        delete lastPrev;//for memory leaks
+        newTerm ->next ->prev = newTerm;
+        newTerm ->prev ->next = newTerm;
+        
+        //increment the size
+        size++;
+        
+        newTerm = NULL;
+        delete newTerm;
+        last_position = NULL;
+        delete last_position;
         return true;
         
         
     }
-    else if(lastPrev->prev==head){//if we're at the first term
+    // at this stage we art the first term in the polynomial list 
+    else if(last_position ->prev == head){
         //place a new term before the first term 
-        Term *newTerm=new Term;//create a new term
-        newTerm->coeff=newCoefficient;//set the value 
-        newTerm->power=power;//set the value 
+        Term *newTerm = new Term;//create a new term
         
-        newTerm->next=head->next;//place the new term to the left of last prev 
-        newTerm->prev=head;//place the new term to the left of last prev
+        //set the coefficient and power
+        newTerm ->coeff = newCoefficient;
+        newTerm ->power = power;
         
-        newTerm->next->prev=newTerm;//link back 
-        newTerm->prev->next=newTerm;//link back 
+        //place the new term to the left of last prev
+        newTerm ->next = head->next;
+        newTerm ->prev = head;
         
-        size++;//increment the size 
-        newTerm=NULL;//for memory leaks 
-        delete newTerm;//for memory leaks
-        lastPrev=NULL;//for memory leaks 
-        delete lastPrev;//for memory leaks
+        newTerm ->next ->prev = newTerm;
+        newTerm ->prev ->next = newTerm;
+        
+        //increment the size
+        size++;
+        newTerm = NULL;
+        delete newTerm;
+        last_position = NULL;
+        delete last_position;
         return true;
         
     }
     
     return true;
 }
+
+
+
 
 
 
